@@ -9,20 +9,18 @@ import (
 )
 
 type Run struct {
-	config  *config.Config
-	command string
+	config   *config.Config
+	commands []string
 }
 
 func (run Run) Command(cfg *config.Config) *cobra.Command {
 	run.config = cfg
 
 	cmd := &cobra.Command{
-		Use:                   "run [OPTIONS] IMAGE [COMMAND] [ARG...]",
-		Short:                 "run a command inside a new container",
-		DisableFlagsInUseLine: true,
-		SilenceUsage:          true,
-		Args:                  run.validateArgs,
-		Run:                   run.main,
+		Use:   "run [OPTIONS] IMAGE [COMMAND] [ARG...]",
+		Short: "run a command inside a new container",
+		Args:  run.validateArgs,
+		Run:   run.main,
 	}
 
 	flags := cmd.Flags()
@@ -39,19 +37,14 @@ func (run Run) Command(cfg *config.Config) *cobra.Command {
 func (run *Run) validateArgs(_ *cobra.Command, args []string) error {
 	if length := len(args); length < 1 {
 		return fmt.Errorf("error, no command has been provided")
-	} else if length > 1 {
-		return fmt.Errorf("error, more than one command has been provided, commands: %v", args)
 	}
 
-	run.command = args[0]
+	run.commands = args
 	return nil
 }
 
-func (run *Run) main(cmd *cobra.Command, _ []string) {
-	fmt.Println(run.command)
+func (run *Run) main(_ *cobra.Command, _ []string) {
+	fmt.Println(run.commands)
 
-	val, _ := cmd.Flags().GetBool("detach")
-	fmt.Println("ARGS", val)
-
-	fmt.Println(run.config.CGroups.Memory)
+	fmt.Println(run.config.Hostname)
 }
