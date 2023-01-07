@@ -4,7 +4,7 @@
 >
 > I've used this term to show the importance of learning how containers works internally.
 
-a tiny container manager tool highly inspired from docker to demonstrate how containers are created without using `containers` nor `runc` only with linux features like `namespaces` and `control groups`.
+a tiny container manager tool highly inspired from docker to demonstrate how containers are created without using `containerd` nor `runc` only with linux features like `namespaces` and `control groups`.
 
 ## notes
 
