@@ -26,7 +26,7 @@ func Load() *Config {
 		log.Fatalf("error loading default: %s", err)
 	}
 
-	if err := LoadEnv(k); err != nil {
+	if err := loadEnv(k); err != nil {
 		log.Printf("error loading environment variables: %v", err)
 	}
 
@@ -49,7 +49,7 @@ func Load() *Config {
 }
 
 // load from environment variables
-func LoadEnv(k *koanf.Koanf) error {
+func loadEnv(k *koanf.Koanf) error {
 	callback := func(source string) string {
 		base := strings.ToLower(strings.TrimPrefix(source, prefix))
 		return strings.ReplaceAll(base, seperator, delimeter)

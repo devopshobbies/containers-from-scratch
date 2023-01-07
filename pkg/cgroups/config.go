@@ -1,6 +1,8 @@
 package cgroups
 
 type Config struct {
-	CPU    float64 `koanf:"cpu"`
+	CPUs   float64 `koanf:"cpus"`
 	Memory int     `koanf:"memory"`
+	Swap   int     `koanf:"swap"`
+	PIDs   int     `koanf:"pids"`
 }

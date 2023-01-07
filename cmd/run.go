@@ -7,9 +7,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type Run struct{}
+type Run struct {
+	config *config.Config
+}
 
-func (run Run) Command() *cobra.Command {
+func (run Run) Command(cfg *config.Config) *cobra.Command {
+	run.config = cfg
+
 	cmd := &cobra.Command{
 		Use:                   "run [OPTIONS] IMAGE [COMMAND] [ARG...]",
 		Short:                 "run a command inside a new container",
@@ -19,22 +23,20 @@ func (run Run) Command() *cobra.Command {
 		Run:                   run.main,
 	}
 
-	cfg := config.Load()
-
 	flags := cmd.Flags()
-	flags.StringP("host", "", "", "Container Hostname")
-	flags.IntP("memory", "m", cfg.CGroups.Memory, "Limit memory access in MB")
-	flags.IntP("swap", "s", 20, "Limit swap access in MB")
-	flags.Float64P("cpu", "c", cfg.CGroups.CPU, "Limit CPUs")
-	flags.IntP("pids", "p", 128, "Limit number of processes")
-	flags.BoolP("detach", "d", false, "run command in the background")
+	flags.String("host", "", "Container Hostname")
+	flags.IntVar(&cfg.CGroups.Memory, "memory", cfg.CGroups.Memory, "Limit memory access in MB")
+	flags.Float64Var(&cfg.CGroups.CPUs, "cpu", cfg.CGroups.CPUs, "Limit CPUs")
+	flags.IntVar(&cfg.CGroups.Swap, "swap", cfg.CGroups.Swap, "Limit swap access in MB")
+	flags.IntVar(&cfg.CGroups.PIDs, "pids", cfg.CGroups.PIDs, "Limit number of processes")
+	flags.Bool("detach", false, "run command in the background")
 
 	return cmd
 }
 
 func (run *Run) main(cmd *cobra.Command, args []string) {
-	cfg := config.Load()
-	_ = cfg
 	val, _ := cmd.Flags().GetInt("memory")
 	fmt.Println("ARGS", val)
+
+	fmt.Println(run.config.CGroups.Memory)
 }

@@ -12,6 +12,8 @@ import (
 )
 
 func main() {
+	cfg := config.Load()
+
 	root := &cobra.Command{
 		Use:                   "zar [OPTIONS] COMMAND",
 		Short:                 "A tiny tool for managing containers",
@@ -21,11 +23,10 @@ func main() {
 	}
 
 	root.AddCommand(
-		cmd.Run{}.Command(),
+		cmd.Run{}.Command(cfg),
 	)
 
 	if err := root.Execute(); err != nil {
-		cfg := config.Load()
 		logger := log.NewZap(cfg.Log)
 		logger.Fatal("failed to execute root command", zap.Error(err))
 	}
