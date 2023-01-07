@@ -1,4 +1,4 @@
-module github.com/mohammadne/zar
+module github.com/devopshobbies/containers-from-scratch
 
 go 1.19
 

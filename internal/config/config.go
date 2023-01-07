@@ -1,8 +1,8 @@
 package config
 
 import (
-	"github.com/mohammadne/zar/pkg/cgroups"
-	"github.com/mohammadne/zar/pkg/log"
+	"github.com/devopshobbies/containers-from-scratch/pkg/cgroups"
+	"github.com/devopshobbies/containers-from-scratch/pkg/log"
 )
 
 type Config struct {

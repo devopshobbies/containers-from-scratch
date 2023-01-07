@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/mohammadne/zar/internal/config"
-	"github.com/mohammadne/zar/pkg/utils"
+	"github.com/devopshobbies/containers-from-scratch/internal/config"
+	"github.com/devopshobbies/containers-from-scratch/pkg/utils"
 	"github.com/spf13/cobra"
 )
 
