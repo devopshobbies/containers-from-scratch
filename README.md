@@ -1,5 +1,9 @@
 # zar
 
+![Blogger](https://img.shields.io/codecov/c/gh/mohammadne/zar?logo=codecov&style=for-the-badge)
+![License](https://img.shields.io/github/license/mohammadne/zar?style=for-the-badge)
+![Stars](https://img.shields.io/github/stars/mohammadne/zar?style=for-the-badge)
+
 > Zar is an ancient Iranian name that means gold 🏆
 >
 > I've used this term to show the importance of learning how containers works internally.
