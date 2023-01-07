@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/davecgh/go-spew/spew"
+	"github.com/devopshobbies/containers-from-scratch/internal"
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/providers/env"
 	"github.com/knadh/koanf/providers/structs"
@@ -14,8 +15,6 @@ import (
 const (
 	delimeter = "."
 	seperator = "__"
-
-	prefix = "ZAR" + seperator
 )
 
 func Load() *Config {
@@ -50,6 +49,8 @@ func Load() *Config {
 
 // load from environment variables
 func loadEnv(k *koanf.Koanf) error {
+	var prefix = strings.ToUpper(internal.Project) + seperator
+
 	callback := func(source string) string {
 		base := strings.ToLower(strings.TrimPrefix(source, prefix))
 		return strings.ReplaceAll(base, seperator, delimeter)

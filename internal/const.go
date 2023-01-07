@@ -1,9 +1,9 @@
 package internal
 
 const (
-	hi = "zar"
+	Project = "cfs"
 
-	LayersPath     = "/var/lib/" + hi + "/images/layers"
-	ContainersPath = "/var/run/" + hi + "/containers"
-	NetNSPath      = "/var/run/" + hi + "/netns"
+	LayersPath     = "/var/lib/" + Project + "/images/layers"
+	ContainersPath = "/var/run/" + Project + "/containers"
+	NetNSPath      = "/var/run/" + Project + "/netns"
 )
