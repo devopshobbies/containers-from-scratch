@@ -3,8 +3,8 @@ package cmd
 import (
 	"os"
 
+	"github.com/mohammadne/zar/internal/config"
 	"github.com/spf13/cobra"
-	"honnef.co/go/tools/config"
 )
 
 type Run struct{}
