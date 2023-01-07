@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/mohammadne/zar/internal/config"
@@ -14,4 +15,6 @@ func (cmd Run) Command(cfg *config.Config, trap chan os.Signal) *cobra.Command {
 	return &cobra.Command{Use: "run", Short: "run heliograph call server", Run: run}
 }
 
-func (cmd *Run) main(cfg *config.Config, trap chan os.Signal) {}
+func (cmd *Run) main(cfg *config.Config, trap chan os.Signal) {
+	fmt.Println("HELLO")
+}

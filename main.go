@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"os"
 	"os/signal"
 	"syscall"
@@ -12,11 +13,6 @@ import (
 	"go.uber.org/zap"
 )
 
-const (
-	short = "short description"
-	long  = `long description`
-)
-
 func main() {
 	cfg := config.Load()
 
@@ -25,7 +21,14 @@ func main() {
 	channel := make(chan os.Signal, 1)
 	signal.Notify(channel, syscall.SIGINT, syscall.SIGTERM)
 
-	root := &cobra.Command{Short: short, Long: long}
+	root := &cobra.Command{
+		Use:                   "zar [OPTIONS] COMMAND",
+		Short:                 "A tiny tool for managing containers",
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		PersistentPreRunE:     isRoot,
+	}
+
 	root.AddCommand(
 		cmd.Run{}.Command(cfg, channel),
 	)
@@ -33,4 +36,13 @@ func main() {
 	if err := root.Execute(); err != nil {
 		logger.Fatal("failed to execute root command", zap.Error(err))
 	}
+}
+
+// isRoot implements a cobra acceptable function and
+// returns ErrNotPermitted if user is not root.
+func isRoot(_ *cobra.Command, _ []string) error {
+	if os.Getuid() != 0 {
+		return errors.New("operation not permitted, you should be the root user")
+	}
+	return nil
 }
