@@ -5,15 +5,17 @@ package main
 
 import (
 	"errors"
+	"github.com/devopshobbies/containers-from-scratch/cmd"
+	"github.com/devopshobbies/containers-from-scratch/internal"
+	"github.com/devopshobbies/containers-from-scratch/internal/config"
+	"github.com/devopshobbies/containers-from-scratch/pkg/log"
 	"os"
 
-	"github.com/mohammadne/zar/cmd"
-	"github.com/mohammadne/zar/internal"
-	"github.com/mohammadne/zar/internal/config"
-	"github.com/mohammadne/zar/pkg/log"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 )
+
+const Perm = 0700
 
 func main() {
 	cfg := config.Load()
@@ -44,9 +46,18 @@ func preRun(_ *cobra.Command, _ []string) error {
 	}
 
 	// create necessary directories
-	os.MkdirAll(internal.LayersPath, 0700)
-	os.MkdirAll(internal.ContainersPath, 0700)
-	os.MkdirAll(internal.NetNSPath, 0700)
+	return createDirs()
+}
+
+func createDirs() error {
+	dirs := []string{internal.LayersPath, internal.ContainersPath,
+		internal.NetNSPath}
+
+	for _, dir := range dirs {
+		if err := os.MkdirAll(dir, Perm); err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
