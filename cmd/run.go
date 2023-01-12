@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/devopshobbies/containers-from-scratch/internal/config"
-	"github.com/devopshobbies/containers-from-scratch/pkg/utils"
+	"github.com/devopshobbies/containers-from-scratch/pkg/random"
 	"github.com/spf13/cobra"
 )
 
@@ -24,11 +24,11 @@ func (run Run) Command(cfg *config.Config) *cobra.Command {
 	}
 
 	flags := cmd.Flags()
-	flags.StringVar(&cfg.Hostname, "hostname", utils.RandomString(10), "container hostname")
-	flags.IntVar(&cfg.CGroups.Memory, "memory", cfg.CGroups.Memory, "limit memory access in MB")
-	flags.Float64Var(&cfg.CGroups.CPUs, "cpu", cfg.CGroups.CPUs, "limit CPUs")
-	flags.IntVar(&cfg.CGroups.Swap, "swap", cfg.CGroups.Swap, "limit swap access in MB")
-	flags.IntVar(&cfg.CGroups.PIDs, "pids", cfg.CGroups.PIDs, "limit number of processes")
+	flags.StringVar(&cfg.Hostname, "hostname", random.RandomString(10), "container hostname")
+	flags.IntVar(&cfg.CGroup.Memory, "memory", cfg.CGroup.Memory, "limit memory access in MB")
+	flags.Float64Var(&cfg.CGroup.CPUs, "cpu", cfg.CGroup.CPUs, "limit CPUs")
+	flags.IntVar(&cfg.CGroup.Swap, "swap", cfg.CGroup.Swap, "limit swap access in MB")
+	flags.IntVar(&cfg.CGroup.PIDs, "pids", cfg.CGroup.PIDs, "limit number of processes")
 	flags.Bool("detach", false, "run command in the background")
 
 	return cmd
