@@ -1,4 +1,4 @@
-package cgroups
+package cgroup
 
 type Config struct {
 	CPUs   float64 `koanf:"cpus"`

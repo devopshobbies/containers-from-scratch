@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/devopshobbies/containers-from-scratch/pkg/cgroups"
+	"github.com/devopshobbies/containers-from-scratch/pkg/cgroup"
 	"github.com/devopshobbies/containers-from-scratch/pkg/log"
 )
 
@@ -13,7 +13,7 @@ func Default() *Config {
 			Level:       "info",
 			Encoding:    "console",
 		},
-		CGroups: &cgroups.Config{
+		CGroup: &cgroup.Config{
 			Memory: 200,
 			CPUs:   1,
 			Swap:   1,
