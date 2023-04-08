@@ -1,63 +1,62 @@
-//go:build linux
-// +build linux
-
 package main
 
 import (
-	"errors"
-	"github.com/devopshobbies/containers-from-scratch/cmd"
-	"github.com/devopshobbies/containers-from-scratch/internal"
-	"github.com/devopshobbies/containers-from-scratch/internal/config"
-	"github.com/devopshobbies/containers-from-scratch/pkg/log"
+	"fmt"
 	"os"
-
-	"github.com/spf13/cobra"
-	"go.uber.org/zap"
+	"os/exec"
+	"syscall"
 )
 
-const Perm = 0700
-
+// go run main.go run <cmd> <args>
 func main() {
-	cfg := config.Load()
+	switch os.Args[1] {
+	case "run":
+		run()
+	case "child":
+		child()
 
-	root := &cobra.Command{
-		Use:                   "zar [OPTIONS] COMMAND",
-		Short:                 "A tiny tool for managing containers",
-		PersistentPreRunE:     preRun,
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		SilenceUsage:          true,
-	}
-
-	root.AddCommand(
-		cmd.Run{}.Command(cfg),
-	)
-
-	if err := root.Execute(); err != nil {
-		logger := log.NewZap(cfg.Log)
-		logger.Fatal("failed to execute root command", zap.Error(err))
+	default:
+		panic("help")
 	}
 }
 
-func preRun(_ *cobra.Command, _ []string) error {
-	// returns ErrNotPermitted if user is not root
-	if os.Getuid() != 0 {
-		return errors.New("operation not permitted, you should be the root user")
+func run() {
+	fmt.Printf("Running %v \n", os.Args[2:])
+
+	cmd := exec.Command("/proc/self/exe", append([]string{"child"}, os.Args[2:]...)...)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		// from the host
+		Cloneflags: syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
+
+		// unshare the following with the host
+		Unshareflags: syscall.CLONE_NEWNS,
 	}
 
-	// create necessary directories
-	return createDirs()
+	must(cmd.Run())
 }
 
-func createDirs() error {
-	dirs := []string{internal.LayersPath, internal.ContainersPath,
-		internal.NetNSPath}
+func child() {
+	fmt.Printf("Running %v as %d\n", os.Args[2:], os.Getegid())
 
-	for _, dir := range dirs {
-		if err := os.MkdirAll(dir, Perm); err != nil {
-			return err
-		}
+	must(syscall.Sethostname([]byte("container")))
+	must(syscall.Chroot("/tmp/alpine-rootfs/"))
+	must(syscall.Chdir("/")) // go the root of yourself whenever you are
+	must(syscall.Mount("proc", "proc", "proc", 0, ""))
+
+	cmd := exec.Command(os.Args[2], os.Args[3:]...)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	must(cmd.Run())
+
+	must(syscall.Unmount("/proc", 0))
+}
+
+func must(err error) {
+	if err != nil {
+		panic(err)
 	}
-
-	return nil
 }
