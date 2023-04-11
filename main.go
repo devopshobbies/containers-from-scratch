@@ -25,7 +25,8 @@ func main() {
 func run() {
 	log.Printf("Running %v \n", os.Args[2:])
 
-	cmd := exec.Command("/proc/self/exe", append([]string{"child"}, os.Args[2:]...)...) //nolint:gosec
+	//nolint:gosec // we will panic if user arguments are invalid.
+	cmd := exec.Command("/proc/self/exe", append([]string{"child"}, os.Args[2:]...)...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -45,7 +46,8 @@ func child() {
 	must(syscall.Chdir("/"))
 	must(syscall.Mount("proc", "proc", "proc", 0, ""))
 
-	cmd := exec.Command(os.Args[2], os.Args[3:]...) //nolint:gosec
+	//nolint:gosec // we will panic if user arguments are invalid.
+	cmd := exec.Command(os.Args[2], os.Args[3:]...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
