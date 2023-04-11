@@ -1,0 +1,17 @@
+{
+    "group": {
+        "default": {
+            "targets": [
+                "containers-from-scratch"
+            ]
+        }
+    },
+    "target": {
+        "containers-from-scratch": {
+            "dockerfile": "build/package/Dockerfile",
+            "tags": [
+                "ghcr.io/devopshobbies/containers-from-scratch"
+            ]
+        }
+    }
+}
